@@ -1,0 +1,28 @@
+{
+  "name": "fit",
+  "version": "0.0.2",
+  "description": "A way of fitting in type",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/designerzen/fit.git"
+  },
+  "keywords": [
+    "Typography",
+    "JS",
+    "JavaScript",
+    "CSS"
+  ],
+  "author": "designerzen",
+  "devDependencies": {
+    del": "^1.1.1",
+
+    "gulp": "^3.9.0",
+    "gulp-cli": "^0.3.0",
+
+    "gulp-jshint": "^1.9.0",
+    "gulp-rename": "^1.2.0",
+    "gulp-uglify": "^1.1.0"
+  },
+  "dependencies": {
+  }
+}

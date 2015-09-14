@@ -1,0 +1,255 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>FIT Test Suite</title>
+        <meta name="description" content="tests for FIT">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href='https://fonts.googleapis.com/css?family=Roboto:400,500' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Playfair+Display:400italic,700italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="style.css">
+
+        <!--[if lt IE 9]>
+            <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <main>
+
+
+
+            <header>
+                <h1 class='fit--single-line' id='main-heading'><strong>FIT.</strong><sub>js</sub> - Your Typography</h1>
+                <h2 class='fit--single-line' id='main-subheading'>A <strong>JavaScript</strong> Toolkit for typography resizing</h2>
+                <nav>
+                    <ul id='menu'>
+
+                        <li class='menu-item'>
+                            <a id='show-borders' href='#'>Show Borders</a>
+                        </li>
+
+                        <li class='menu-item'>
+                            <a id='reset-type' href='#'>Reset Type</a>
+                        </li>
+
+                        <li class='menu-item'>
+                            <a id='set-type' href='#'>Set Type</a>
+                        </li>
+
+                    </ul>
+                </nav>
+            </header>
+
+
+            <!-- Main Introduction to FIT -->
+            <article>
+                <header>
+                    <h2 class='fit--single-line'><strong>FIT</strong> - Test Suite</h2>
+                    <h3 class=''>Resize this window to see how the methods work</h3>
+                </header>
+
+                <section>
+                    <code class='fit--single-line'>Fit.toSingleLine( <strong>element</strong>, width, minimumSize )</code>
+                    <p class=''>For multiline text, this will try it's best to fit on one line, scaling all the way down to the minimum size ( defaults to 6px )</p>
+                </section>
+
+                <section>
+                    <code class='fit--single-line'>Fit.longestWord( <strong>element</strong>, width, minimumSize )</code>
+                    <p class=''>Do not let long words fall outside of thin elements</p>
+                </section>
+
+                <section>
+                    <code class='fit--single-line'>Fit.inHeight( <strong>element</strong>, height, minimumSize )</code>
+                    <p class=''>For fixed heights, do not let the text vertically overflow</p>
+                </section>
+
+                <section>
+                    <code class='fit--single-line'>Fit.countLines( <strong>element</strong> )</code>
+                    <p class=''>This will attempt to work out how many rows this text vertically spans.</p>
+                </section>
+
+                <h3 class='fit--longest-word'>Instructions</h3>
+                <p class='fit--single-line'>First embed JS path code in html
+
+                    <code>
+
+                    </code>
+                </p>
+
+
+                <p class='fit--single-line'>Then using a HTMLElement, call on of the above methods</p>
+
+                <code class='fit--longest-word'>
+                    // Fetch an element from the DOM<br />
+                    var element = document.getElementById('headline');<br /><br />
+                    // Fit the text in an element to fit on one line<br />
+                    Fit.toSingleLine(element);<br /><br />
+                    // Max Width is 400px<br />
+                    Fit.toSingleLine(element,400);<br /><br />
+                    // Max Width is 400px, minimum font size is 12px<br />
+                    Fit.toSingleLine(element,400,12);
+                </code>
+            </article>
+
+
+            <!-- Demos -->
+            <article id='demos'>
+
+                <section id='single-line'>
+                    <header>
+                        <h3 class='fit--single-line'><strong>FIT</strong> - In Single Line</h3>
+                        <h4 class='fit--single-line'>For short sentences or long words</h4>
+                        <h5 class='fit--single-line'>You can set a specific maximum width as the second argument</h5>
+                        <h6 class='fit--single-line'>And a minimum font size as the third</h6>
+                    </header>
+
+                    <p class='fit--single-line'>autovuokraushinnoista, Mietwagen-Angebote </p>
+
+                    <small class='fit--single-line'>NB. This works only for short sentences as if they are too long then minimumSize may be activated</small>
+                </section>
+
+                <section id='single-line'>
+                    <header>
+                        <h3 class='fit--in-lines max-lines-1'><strong>FIT</strong> - In Lines</h3>
+                        <h4 class='fit--in-lines max-lines-2'>For longer paragraphs with limited vertical height</h4>
+                        <h5 class='fit--in-lines max-lines-3'>You can set a maximum amount of lines that the text will flow over as the second argument</h5>
+                        <h6 class='fit--in-lines max-lines-4'>And a minimum font size as the third</h6>
+                    </header>
+
+                    <p class='fit--in-lines max-lines-2'>autovuokraushinnoista, Mietwagen-Angebote </p>
+
+                    <small class='fit--in-lines max-lines-1'>NB. This works only for short sentences as if they are too long then minimumSize may be activated</small>
+                </section>
+
+
+                <section id='longest-word'>
+                    <header>
+                        <h3 class='fit--single-line'><strong>FIT</strong> - Longest Word</h3>
+                        <h4 class='fit--longest-word'>Find the longest word in the text and scale the entire paragraph so that it always fits in the width</h4>
+                    </header>
+                    <h3 class='fit--longest-word text-caps'>Floccinaucinihilipilification, Supercalifragilisticexpialidocious, Autovuokraushinnoista, Mietwagen-Angebote</h3>
+                    <p class='fit--longest-word'>Supercalifragilisticexpialidocious, Autovuokraushinnoista, Pseudopseudohypoparathyroidism, Mietwagen-Angebote, Disenfranchise</p>
+                    <p class='fit--longest-word'>Kanada, Italien, Frbote</p>
+                </section>
+
+
+                <section id='long-words'>
+                    <header>
+                        <h3 class='fit--single-line'><strong>FIT</strong> - Long Words</h3>
+                        <h4 class='fit--long-words'>Scales only the words that are too long for the width</h4>
+                    </header>
+                    <h3 class='fit--long-words text-caps'>Floccinaucinihilipilification, Supercalifragilisticexpialidocious, Autovuokraushinnoista, Mietwagen-Angebote</h3>
+                    <p class='fit--long-words'>Supercalifragilisticexpialidocious, Autovuokraushinnoista, Pseudopseudohypoparathyroidism, Mietwagen-Angebote, Disenfranchise</p>
+                    <p class='fit--long-words'>Kanada, Italien, Frbote</p>
+                </section>
+
+
+                <section id='in-height'>
+                    <header>
+                        <h3 class='fit--single-line'><strong>FIT</strong> - in Height</h3>
+                        <h4 class='fit--single-line text-caps'>For tall paragraphs</h4>
+                    </header>
+
+                    <div class='cleared'>
+                        <img class="" src="http://placehold.it/150x150">
+                        <h3 class='fit--in-height max-height-150'>Wohin Sie auch reisen,Machen Sie eine unvergessliche Reise</h3>
+                    </div>
+
+                    <div class='cleared'>
+                        <img class="" src="http://placehold.it/150x150">
+                        <p class='fit--in-height max-height-150'>Autovuokraushinnoista, Mietwagen-Angebote, Disenfrantchise</p>
+                    </div>
+
+                </section>
+
+                <section id='count'>
+                    <header>
+                        <h3 class='fit--single-line'><strong>FIT</strong> - Line Count</h3>
+                        <h4 class=''>To determine how many rows</h4>
+                    </header>
+                    <h3 class='fit--longest-word'>Wohin Sie auch reisen,Machen Sie eine unvergessliche Reise</h3>
+                    <p class='fit--longest-word'>Long Sentence, Autovuokraushinnoista, Mietwagen-Angebote, Disenfrantchise</p>
+                    <p class='fit--longest-word'>Short Sentence</p>
+                </section>
+
+            </article>
+
+
+            <!-- Examples -->
+            <article id='examples'>
+
+                    <section id='skyscraper'>
+
+                        <header>
+                            <h1 class='fit--single-line'><strong>Example Skyscraper</strong></h1>
+                            <h2 class='fit--single-line'>Tall &amp; Thin</h2>
+                        </header>
+                        <img class="" src="http://placehold.it/120x90">
+
+                        <p class='fit--in-height max-height-150 text-centre'>Let us fit in some long words into this <strong>thin gap</strong> to see how long words works</p>
+                        <p class='fit--longest-word text-centre'>Turbo Line-Break,<br/> Autovuokraushinnoista, <br/><br/>Mietwagen-Angebote, <br/><br/><br/>Disenfranchise</p>
+                    </section>
+
+
+                    <section id='leaderboard'>
+
+                        <header>
+                            <h1 class='fit--single-line'><strong>Example Leaderboard</strong> - Wide &amp; Short</h1>
+                            <h2 class='fit--single-line'>Let us fit in some long words into this <strong>wide gap</strong></h2>
+                        </header>
+
+                        <img class="" src="http://placehold.it/200x90">
+                        <p class='fit--in-height max-height-90'>As this is wide view, we can put quite a lot of text in this field and use Fit.inHeight(90) with the height of the image to the left</p>
+
+                    </section>
+
+
+                    <section id='mpu'>
+
+                        <header>
+                            <h1 class='fit--single-line'><strong>Example MP</strong> - Thin &amp; Short</h1>
+                            <h2 class='fit--single-line'>This is a shrunk using <strong>toSingleLine</strong></h2>
+                        </header>
+                        <img class="" src="http://placehold.it/125x150">
+                        <p class='fit--in-height max-height-150'>As this is short, restricted view, here we are using Fit.inHeight(150) set with the height of the image to the left</p>
+                        <small>As you can see it can look quite pretty</small>
+
+                    </section>
+
+
+            </article>
+
+
+
+
+            <article id='faq'>
+
+                <header>
+                    <h1 class='fit--single-line'>Frequently Asked <strong>Questions</strong></h1>
+                    <h2 class='fit--single-line text-caps'>&amp; <strong>Troubleshooting</strong></h2>
+                </header>
+
+                <ul>
+
+                    <li class='question'>
+                        <p>Q. Why is my code,span,... tag not fitting in a single line?</p>
+                        <p>A. Have you applied display:block to this element?</p>
+                    </li>
+
+                    <li class='question'>
+                        <p>Q. Sometimes my line count is incorrect</p>
+                        <p>A. Have you applied a line-height to the body?</p>
+                    </li>
+
+                </ul>
+
+            </article>
+
+        </main>
+        <script src="fontloader.js"></script>
+        <script src="../src/fit.js"></script>
+        <script src="test.js"></script>
+    </body>
+</html>
