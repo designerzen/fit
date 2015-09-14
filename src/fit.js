@@ -126,73 +126,68 @@ window.Fit = function(){
 	// are too big to fit in the specified width
 	//
 	// USE CASE: 	Shrink only Long words in thin sections
-	// ACTION:		Scales DOWN *ONLY*
-	// NB. 			Only use on VERY SHORT paragraphs
+	// ACTION:		Forces all elements to use one font size
+	// NB. 			Best supplied with multiple elements
 	/////////////////////////////////////////////////////////////////
-	Fit.longWords = function( element, width, minimumSize, scaleBy )
+	Fit.allTo = function( elements, smallest )
 	{
-		minimumSize = minimumSize || MIN_SIZE;
-		// requested width, falls back to element width if not specified
-		width = width || getComputedStyle( element ).width;
-		// make sure we just get the number
-		width = parseFloat(width+'');
+		// first see if elements is an array or a string...
+		if( typeof elements === 'string' ) elements = [elements];
+		if (elements.length < 1) return;
 
 		var
-			scaleFactor = scaleBy || SCALE_FACTOR,
-			visibility = element.style.visibility,
-			// save original text
-			copy = element.innerHTML,
-			// get rid of html
-			text = convertToText( copy ),
-			// arrange array from big to small / ASC -> a - b; DESC -> b - a
-			words = text.split(" ").sort(function(a, b){ return b.length - a.length; }),
-			// holder for pointers to words
-			wordIDs = [],
-			// presumably the longest word is the widest?
-			longestWord,
-			// how many long words should we test?
-			quantity = words.length < 10 ? words.length : 10;
+			element,
+			i,
+			quantity = elements.length,
+			toSmallest = smallest != false,
+			table = [];
 
-		// hide from screen!
-		element.style.visibility = 'hidden';
-
-		// loop through top ten(-ish) words...
-		for (var w=0; w<quantity; ++w)
+		// now loop through all elements
+		for ( i=0; i < quantity; ++i )
 		{
+			element = elements[i];
+			// fetch heights...
 			var
-				id = uniqueID(),
-				word = words[w];
+				style = getComputedStyle( element ),
+				font = style.getPropertyValue('font-size');
 
-			words[w] = '<span id="'+id+'">'+word+'</span>';
-			wordIDs.push( id );
+			// now store this as an object in memory
+			var data = {};
+			data.element = element;
+			data.fontSize = parseFloat(font);
+			data.fontUnits = font.split( data.fontSize )[1];
+			table.push( data );
 		}
 
-		// re combine the words
-		var reassembled = words.join(" ");
-		element.innerHTML = reassembled;
+		// now sort these according to the font size
+		if ( !toSmallest ) table.sort(function(a, b){ return b.fontSize - a.fontSize; })
+		else table.sort(function(a, b){ return a.fontSize - b.fontSize; })
 
-		// Now we want to loop through all of these long words from longest tp shortest
-		// and check to see if their widths are longer than allowable
-		// loop through the top selections just to be sure of their sizes
-		for (var i=0,q=wordIDs.length; i<q; ++i)
+		// now we have the required size
+		var requested = table[0];
+
+		// loop again and set all other elements to this size
+		for ( i=0; i < quantity; ++i )
 		{
-			var
-				wordElement = document.getElementById( wordIDs[i] ),
-				wordWidth = getWidth( wordElement);
-
-			wordElement.style.whiteSpace = "nowrap";
-
-			// we have found a word wider than permitted width!
-			if ( wordWidth > width )
-			{
-				// scale down...
-				loop( wordElement, wordElement, width, minimumSize, scaleFactor );
-			}
+			element = elements[i];
+			element.style.fontSize = requested.fontSize + requested.fontUnits;
 		}
 
-		// show
-		element.style.visibility = visibility;
+		return requested.fontSize + requested.fontUnits;
 	};
+
+	// Shortcut - force all text in these elements to shrink to the smallest one
+	Fit.allToSmallest = function( elements )
+	{
+		Fit.allTo( elements, true );
+	};
+
+	// Shortcut - force all text in these elements to grow to the largest one
+	Fit.allToLargest = function( elements )
+	{
+		Fit.allTo( elements, false );
+	};
+
 
 
 	/////////////////////////////////////////////////////////////////

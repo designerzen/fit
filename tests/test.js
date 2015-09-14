@@ -21,8 +21,7 @@ var
     arrayInHeight            = getByClass('fit--in-height');
     arrayLongestWord         = getByClass('fit--longest-word'),
     arrayLongestWord         = getByClass('fit--longest-word'),
-    arrayInLines             = getByClass('fit--in-lines'),
-    arrayLongWords           = getByClass('fit--long-words');
+    arrayInLines             = getByClass('fit--in-lines');
 
 
 // Here are the options...
@@ -69,17 +68,6 @@ function fitTypography()
             //console.log(Fit.count+'. FIT - longestWord :',arrayLongestWord[type] );
             Fit.longestWord( arrayLongestWord[type] );
             arrayBundled.push( arrayLongestWord[type] );
-        }
-    }
-
-    for ( type in arrayLongWords )
-    {
-        if ( arrayLongWords.hasOwnProperty(type) )
-        {
-            // Fit.longestWord( element, width, minimumSize );
-            //console.log(Fit.count+'. FIT - longWords :',arrayLongWords[type] );
-            Fit.longWords( arrayLongWords[type] );
-            arrayBundled.push( arrayLongWords[type] );
         }
     }
 
@@ -136,6 +124,10 @@ function fitTypography()
             element.className += " lines-"+lines;
         }
     }
+
+    // now let us scale all elements that are supposed to be the same size
+    // Fit.allToSmallest();
+    // Fit.allToLargest();
 }
 
 // Get rid of all type modifications!
@@ -149,11 +141,29 @@ function resetAll()
     restArray( arrayInLines );
     restArray( arrayInHeight );
     restArray( arrayLongestWord );
-    restArray( arrayLongWords );
 }
 
+
 // wait for font to load befrore calling this...fitTypography
-FontDetect.onFontLoaded ('Playfair Display', fitTypography, fitTypography , {msTimeout: 3000});
+// FontDetect.onFontLoaded ('Playfair Display', fitTypography, fitTypography , {msTimeout: 3000});
+
+// https://github.com/bramstein/fontfaceobserver
+var observerH = new FontFaceObserver('Playfair Display', {
+    weight: 700
+});
+observerH.check().then(fitTypography, function () {
+    console.error('Font : Playfair Display is not available');
+    fitTypography();
+});
+
+var observerP = new FontFaceObserver('Roboto', {
+    weight: 400
+});
+
+observerH.check().then(fitTypography, function () {
+    console.error('Font : Roboto is not available');
+    fitTypography();
+});
 
 // or one day...
 // document.fonts.ready().then(fitTypography, function(e){ alert('Webfont failed to load from Google CDN'); } );

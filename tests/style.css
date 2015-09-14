@@ -449,7 +449,7 @@ body{
     padding: 4%;
 }
 
-     
+
 h1,h2,h3,h4,h5,h6{
     font-family: 'Playfair Display',Cambria,Georgia, serif;
     font-style: italic;
@@ -509,34 +509,46 @@ small{
 a{
     color:white;
     text-decoration: none;
-    border-bottom:red 1px solid;
+    border-bottom:grey 1px solid;
     padding-bottom: 7px;
+}
+a:focus{
+    color:grey;
+    color:white;
+    border-color:white;
 }
 a:hover{
     color:grey;
     text-decoration: none;
-    border-color:purple;
+    border-color:black;
 }
 
 main{
 
 }
-
-#menu{
+header{
+    margin-top:4em;
+}
+header nav{
     position: fixed;
-    list-style: none;
     top:0;
-    left:2%;
-    right:2%;
+    left:0;
+    right:0;
     z-index:303;
+    margin:0;
     background-color: #111111;
+    padding:4% 4% 0 4%;
+}
+#menu{
+    list-style: none;
+    padding:0;
     margin:0;
 }
 
 #menu li{
     display: inline-block;
     margin:0;
-    margin-left:4px;
+    margin-right:4px;
     margin-bottom:4px;
     padding-top: 4px;
     padding-bottom: 4px;
@@ -651,12 +663,6 @@ section{
 }
 
 
-
-
-#demos.show-borders > *{
-
-}
-
 .show-borders .fit--single-line{
     outline: 1px solid #ccffcc;
     background-color: #efefef;
@@ -722,4 +728,12 @@ section{
 #mpu p{
     width:180px;
     float:right;
+}
+
+
+.question p{
+    color:black;
+}
+.question p:first-child{
+    color:grey;
 }
