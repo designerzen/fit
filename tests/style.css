@@ -731,9 +731,29 @@ section{
 }
 
 
-.question p{
-    color:black;
+#qanda{
+    list-style: none;
 }
+
 .question p:first-child{
     color:grey;
+}
+.question p:first-child:before{
+    content:'Q. ';
+    color:grey;
+    font-family: 'Playfair Display',Cambria,Georgia, serif;
+    font-style: italic;
+    font-weight: 700;
+}
+
+.question p{
+    color:black;
+
+}
+.question p:before{
+    content:'A. ';
+    color:grey;
+    font-family: 'Playfair Display',Cambria,Georgia, serif;
+    font-style: italic;
+    font-weight: 700;
 }
