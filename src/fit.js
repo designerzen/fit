@@ -51,7 +51,7 @@ window.Fit = function(){
 	{
 		minimumSize = minimumSize || MIN_SIZE;
 		// requested width, falls back to element width if not specified
-		width = width || getComputedStyle( element ).width;
+		width = width || getWidth( element );
 		// make sure we just get the number
 		width = parseFloat(width);
 
@@ -126,8 +126,8 @@ window.Fit = function(){
 	// are too big to fit in the specified width
 	//
 	// USE CASE: 	Shrink only Long words in thin sections
-	// ACTION:		Forces all elements to use one font size
-	// NB. 			Best supplied with multiple elements
+	// ACTION:		Scales DOWN *ONLY*
+	// NB. 			Only use on VERY SHORT paragraphs
 	/////////////////////////////////////////////////////////////////
 	Fit.allTo = function( elements, smallest )
 	{
@@ -176,13 +176,11 @@ window.Fit = function(){
 		return requested.fontSize + requested.fontUnits;
 	};
 
-	// Shortcut - force all text in these elements to shrink to the smallest one
 	Fit.allToSmallest = function( elements )
 	{
 		Fit.allTo( elements, true );
 	};
 
-	// Shortcut - force all text in these elements to grow to the largest one
 	Fit.allToLargest = function( elements )
 	{
 		Fit.allTo( elements, false );
@@ -201,11 +199,11 @@ window.Fit = function(){
 			id = uniqueID(),
 			scaleFactor = scaleBy || SCALE_FACTOR,
 			style = getComputedStyle( element ),
-			height = parseFloat( style.height ),
+			height = getHeight(element),
 			heightUnits = style.height.split( height )[1];
 
 		// requested width, falls back to element width if not specified
-		width = width || style.width;
+		width = width || getWidth(element);
 		// make sure we just get the number
 		width = parseFloat(width);
 		// set minimum fon size
@@ -230,7 +228,7 @@ window.Fit = function(){
 		element.innerHTML = copy;
 
 		// send back difference is size - useful for paddings
-		return height - parseFloat(  getComputedStyle( element ).height );
+		return height - parseFloat( getHeight(element) );
 	};
 
 
@@ -256,9 +254,9 @@ window.Fit = function(){
 			fontUnits = font.split( fontSize )[1],
 			scrollHeight = element.scrollHeight;
 
-		// requested width, falls back to element width if not specified
+		// requested height, falls back to element nax-height if not specified
 		// WARNING : maxHeight here may return weird figure || maxHeight
-		height = height || style.height;
+		height = height || getHeight(element);
 		// make sure we just get the number
 		height = parseFloat(height);
 
@@ -304,7 +302,7 @@ window.Fit = function(){
 			scaleFactor = scaleBy || SCALE_FACTOR,
 			// and let's get the new styles now that it isn't wrapping
 			style = getComputedStyle( element ),
-			height = parseFloat( style.height ),
+			height = parseFloat( getHeight(element) ),
 			font = style.getPropertyValue('font-size'),
 			fontSize = parseFloat(font),
 			fontUnits = font.split( fontSize )[1];
@@ -349,7 +347,7 @@ window.Fit = function(){
 		};
 
 		var styles = getComputedStyle( element ),
-			divHeight = parseFloat( styles.height || element.offsetHeight ),
+			divHeight = parseFloat( getHeight(element) ),
 			// parseFloat()
 			lineHeight = calculateLineHeight( element );
 			//element.style.lineHeight || styles.getPropertyValue('lineHeight') || styles['line-height'];
@@ -393,14 +391,13 @@ window.Fit = function(){
 	// Get the Width of an element
 	function getWidth( element, margins )
 	{
-		var width = element.offsetWidth;
-		if ( margins === true )
-		{
-			var style = getComputedStyle(element);
-			return width + parseInt(style.marginLeft) + parseInt(style.marginRight);
-		}else{
-			return width;
-		}
+		return element.clientWidth || element.offsetWidth || element.getBoundingClientRect().width;
+	};
+
+	// Get the Height of an element
+	function getHeight( element )
+	{
+		return element.clientHeight || element.offsetHeight || element.getBoundingClientRect().height;
 	};
 
 	function uniqueID()
