@@ -19,11 +19,26 @@
         <main>
 
 
-
             <header>
                 <h1 class='fit--single-line' id='main-heading'><strong>FIT.</strong><sub>js</sub> - Your Typography</h1>
                 <h2 class='fit--single-line' id='main-subheading'>A <strong>JavaScript</strong> Toolkit for typography resizing</h2>
+                <nav>
+                    <ul id='menu'>
 
+                        <li class='menu-item'>
+                            <a id='show-borders' href='#'>Show Borders</a>
+                        </li>
+
+                        <li class='menu-item'>
+                            <a id='reset-type' href='#'>Reset Type</a>
+                        </li>
+
+                        <li class='menu-item'>
+                            <a id='set-type' href='#'>Set Type</a>
+                        </li>
+
+                    </ul>
+                </nav>
             </header>
 
 
@@ -31,12 +46,46 @@
             <article>
                 <header>
                     <h2 class='fit--single-line'><strong>FIT</strong> - Test Suite</h2>
+                    <h3 class=''>Resize this window to see how the methods work</h3>
                 </header>
 
-                <h3 class='fit--longest-word'>Instructions</h3>
+                <section>
+                    <code class='fit--single-line'>Fit.toSingleLine( <strong>element</strong>, width, minimumSize )</code>
+                    <p class=''>For multiline text, this will try it's best to fit on one line, scaling all the way down to the minimum size ( defaults to 6px )</p>
+                </section>
 
+                <section>
+                    <code class='fit--single-line'>Fit.longestWord( <strong>element</strong>, width, minimumSize )</code>
+                    <p class=''>Do not let long words fall outside of thin elements</p>
+                </section>
+
+                <section>
+                    <code class='fit--single-line'>Fit.inHeight( <strong>element</strong>, height, minimumSize )</code>
+                    <p class=''>For fixed heights, do not let the text vertically overflow</p>
+                </section>
+
+                <section>
+                    <code class='fit--single-line'>Fit.countLines( <strong>element</strong> )</code>
+                    <p class=''>This will attempt to work out how many rows this text vertically spans.</p>
+                </section>
+
+                <h3 class='fit--single-line'>Instructions</h3>
+                <p class='fit--longest-word'>First embed JS path code in html</p>
+
+
+                <p class='fit--single-line'>Then using a HTMLElement, call on of the above methods</p>
+
+                <code class='fit--longest-word'>
+                    // Fetch an element from the DOM<br />
+                    var element = document.getElementById('headline');<br /><br />
+                    // Fit the text in an element to fit on one line<br />
+                    Fit.toSingleLine(element);<br /><br />
+                    // Max Width is 400px<br />
+                    Fit.toSingleLine(element,400);<br /><br />
+                    // Max Width is 400px, minimum font size is 12px<br />
+                    Fit.toSingleLine(element,400,12);
+                </code>
             </article>
-
 
             <!-- Demos -->
             <article id='demos'>
