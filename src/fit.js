@@ -29,7 +29,7 @@ window.Fit = function(){
 	var
 		MIN_SIZE = 6,
 		SCALE_FACTOR = 1,
-		MAX_TRIES = 100000;
+		MAX_TRIES = 100;
 
 	// Output
 	var
@@ -112,7 +112,7 @@ window.Fit = function(){
 		}
 
 		// now we must scale down to small...#
-		loop( element, longestWord, width, minimumSize, scaleFactor );
+		shrink( element, longestWord, width, minimumSize, scaleFactor );
 
 		// now remove the spans
 		element.innerHTML = copy;
@@ -219,7 +219,7 @@ window.Fit = function(){
 		// so now let's set no-wrap for one-lined text
 		spanElement.style.whiteSpace = "nowrap";
 
-		loop( element, spanElement, width, minimumSize, scaleFactor );
+		shrink( element, spanElement, width, minimumSize, scaleFactor );
 
 		// so now we have a pretty close match, but
 		// TODO : can we scale it up by a fraction to see if it fits better?
@@ -281,22 +281,21 @@ window.Fit = function(){
 
 			// Make sure we don't get trapped forever
 			if (element.clientHeight == element.scrollHeight) break;
-			if (count++ >= MAX_TRIES) break;
+			if (count++ >= MAX_TRIES) { console.error('noend'); break};
 		}
 
 		element.style.maxHeight = maxHeight;
 		element.style.visibility = visibility;
-
 	};
 
 	Fit.inLines = function( element, lines, minimumSize, scaleBy )
 	{
 		if (lines < 1) return 0;
-		// If we only want one line...
-		if (lines==1) return Fit.toSingleLine( element, undefined, minimumSize );
 
-		var lineHeight = computeLineHeight( element );
-		var expectedHeight = lineHeight * 2;
+		minimumSize = minimumSize || MIN_SIZE;
+		// If we only want one line...
+		if (lines===1) return Fit.toSingleLine( element, undefined, minimumSize );
+
 		var
 			count = 0,
 			scaleFactor = scaleBy || SCALE_FACTOR,
@@ -307,8 +306,10 @@ window.Fit = function(){
 			fontSize = parseFloat(font),
 			fontUnits = font.split( fontSize )[1];
 
-		while( Fit.countLines(element, true) > lines )
+		while( Fit.countLines(element, false) > lines )
 		{
+			//console.log( count+". countLines "+Fit.countLines(element, false)+" limit:"+lines );
+
 			// compare against requested size
 			fontSize -= scaleFactor;
 
@@ -321,12 +322,11 @@ window.Fit = function(){
 
 			// Try out our new size
 			element.style.fontSize = fontSize + fontUnits;
-			// console.log( count+". Setting fontSize "+fontSize+" to width "+width+ " from "+getWidth( spanElement ) );
 
 			// Make sure we don't get trapped forever
-			if (count++ >= MAX_TRIES) break;
+			if (count++ >= MAX_TRIES) { console.error('noend'); break};
 		}
-		return height - parseFloat( getComputedStyle( element ).height );
+		return height - parseFloat( getHeight( element ) );
 	};
 
 	/////////////////////////////////////////////////////////////////
@@ -341,28 +341,26 @@ window.Fit = function(){
 		// http://stackoverflow.com/questions/4392868/javascript-find-divs-line-height-not-css-property-but-actual-line-height
 		var calculateLineHeight = function(element)
 		{
-			var lineHeight = getComputedStyle(element, 'line-height');
-			if ( isNaN( parseInt(lineHeight, 10) ) ) return computeLineHeight( element );
-			return lineHeight;
+			var computedLineHeight = getComputedStyle(element).getPropertyValue('line-height');
+			if ( isNaN( parseInt(computedLineHeight, 10) ) ) return computeLineHeight( element );
+			return computedLineHeight;
 		};
 
 		var styles = getComputedStyle( element ),
-			divHeight = parseFloat( getHeight(element) ),
-			// parseFloat()
-			lineHeight = calculateLineHeight( element );
-			//element.style.lineHeight || styles.getPropertyValue('lineHeight') || styles['line-height'];
+			divHeight = parseFloat( styles.height || element.offsetHeight ),
+			lineHeight = parseFloat( calculateLineHeight( element ) );
 
 		// Must now do some checks to ensure that lineHeight is valid
-		//lines = divHeight / parseInt( lineHeight );
-		var lines = Math.ceil( divHeight / lineHeight ) - 1,
+		if (lineHeight <= 0) return 1;
+
+		var lines = Math.ceil( divHeight / lineHeight),
 			// fetch copy
 			text = element.innerHTML,
 			// check to see if there are any line breaks and if so add them to the count...
 			numberOfLineBreaks = text && ignoreLineBreaks!==true ? (text.match(/<br/g)||[]).length : 0;
-			//console.error( lineHeight, styles.getPropertyValue('line-height'), element.style.lineHeight,  parseInt( styles['line-height']) );
 
-		// 1 is the orignal line
-		return lines + numberOfLineBreaks + 1;
+		//console.error( lineHeight, lines );
+		return lines + numberOfLineBreaks;
 	};
 
 	/////////////////////////////////////////////////////////////////
@@ -375,6 +373,7 @@ window.Fit = function(){
 	};
 
 	// Private Methods ---------------------------------------------------------------------
+
 	/*
 	// Return a number only version of a composite string
 	function onlyNumbers(string)
@@ -382,10 +381,11 @@ window.Fit = function(){
 		return parseFloat( string.match(/[0-9]+/g, '')[0]);
 	};
 	*/
+
 	function convertToText( html )
 	{
 		convertor.innerHTML = html;
-		return convertor.textContent || convertor.innerText || "";
+		return convertor.textContent || convertor.innerText || html;
 	};
 
 	// Get the Width of an element
@@ -404,6 +404,7 @@ window.Fit = function(){
 	{
 		return 'FIT_' + (Fit.count++);
 	};
+
 	function computeLineHeight( element )
 	{
 		var
@@ -421,10 +422,10 @@ window.Fit = function(){
 		element.removeChild(clone);
 
 		return doubleLineHeight - singleLineHeight;
-	}
+	};
 
 	// shrinking to specified width loop with optional minimumFontSize and scaleFactor
-	function loop( parent, child, width, minimumSize, scaleBy )
+	function shrink( parent, child, width, minimumSize, scaleBy )
 	{
 		var
 			count = 0,
@@ -452,7 +453,7 @@ window.Fit = function(){
 			// console.log( count+". Setting fontSize "+fontSize+" to width "+width+ " from "+getWidth( spanElement ) );
 
 			// Make sure we don't get trapped forever
-			if (count++ >= MAX_TRIES) break;
+			if (count++ >= MAX_TRIES) { console.error('noend'); break};
 		}
 	};
 
