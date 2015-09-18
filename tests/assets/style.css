@@ -473,9 +473,7 @@ h2 {
     font-size: 7rem;
 
 }
-h2 strong{
-    color:#000000;
-}
+
 h3 {
     font-size: 6em;
     font-size: 6rem;
@@ -493,41 +491,55 @@ code {
     font-size: 2.5rem;
     display: block;
 }
+code:before{
+    content:'>';
+    display: inline;
+    color:grey;
+}
 h6 {
     font-size: 2em;
     font-size: 2rem;
 }
 
 p {
-    font-size: 2em;
-    font-size: 2rem;
+    font-size: 1em;
+    font-size: 1rem;
 }
 small{
     letter-spacing: 0.1em;
     display: block;
+    font-style: italic;
 }
 a{
-    color:white;
+    color:grey;
     text-decoration: none;
-    border-bottom:grey 1px solid;
+    border-bottom:black 2px solid;
     padding-bottom: 7px;
+    transition: color 0.1s ease-out, border-color 0.3s ease-out;
 }
 a:focus{
     color:grey;
-    color:white;
     border-color:white;
 }
 a:hover{
-    color:grey;
-    text-decoration: none;
-    border-color:black;
-}
+    color:white;
 
+    text-decoration: none;
+    border-color:grey;
+}
+ul{
+    list-style: none;
+}
 main{
 
 }
-header{
+#main-header{
     margin-top:4em;
+}
+#main-header h1 strong,
+#main-header h2 strong{
+    color:white;
+    text-shadow: 0 0 6px rgba(255,255,255,0.4) ;
 }
 header nav{
     position: fixed;
@@ -539,19 +551,23 @@ header nav{
     background-color: #111111;
     padding:4% 4% 0 4%;
 }
-#menu{
-    list-style: none;
+#menu,#submenu{
+
     padding:0;
     margin:0;
 }
 
+#submenu li,
 #menu li{
     display: inline-block;
     margin:0;
     margin-right:4px;
-    margin-bottom:4px;
+    margin-bottom:8px;
     padding-top: 4px;
     padding-bottom: 4px;
+}
+#submenu{
+    float:right;
 }
 article{
     color:#111111;
@@ -595,18 +611,18 @@ section{
 .cleared {
   zoom: 1; /* ie 6/7 */
 }
-.lines-1:after,
-.lines-2:after,
-.lines-3:after,
-.lines-4:after,
-.lines-5:after,
-.lines-6:after,
-.lines-7:after,
-.lines-8:after,
-.lines-9:after,
-.lines-10:after,
-.lines-11:after,
-.lines-12:after{
+.show-count .lines-1:after,
+.show-count .lines-2:after,
+.show-count .lines-3:after,
+.show-count .lines-4:after,
+.show-count .lines-5:after,
+.show-count .lines-6:after,
+.show-count .lines-7:after,
+.show-count .lines-8:after,
+.show-count .lines-9:after,
+.show-count .lines-10:after,
+.show-count .lines-11:after,
+.show-count .lines-12:after{
     position:absolute;
     top:4px;
     right:4px;
@@ -625,38 +641,38 @@ section{
     opacity: 0.8;
 }
 
-.lines-1:after{
+.show-count .lines-1:after{
     background-color:black;
     color:white;
     content:'1';
 }
-.lines-2:after{
+.show-count .lines-2:after{
     background-color:purple;
     color:white;
     content:'2';
 }
-.lines-3:after{
+.show-count .lines-3:after{
     background-color:pink;
     color:white;
     content:'3';
 }
-.lines-4:after{
+.show-count .lines-4:after{
     background-color:orange;
     color:white;
     content:'4';
 }
-.lines-5:after{
+.show-count .lines-5:after{
     background-color:teal;
     color:white;
     content:'5';
 }
-.lines-6:after{
+.show-count .lines-6:after{
     background-color:teal;
     color:white;
     content:'6';
 }
 
-.lines-7:after{
+.show-count .lines-7:after{
     background-color:teal;
     color:white;
     content:'7';
@@ -733,6 +749,58 @@ section{
 
 #qanda{
     list-style: none;
+}
+
+#demos{
+
+}
+#demo-in-height{
+    max-height:100px;
+}
+.demo{
+    margin-top:1em;
+    margin-bottom:1em;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.demo h5,.demo h6,.demo p{
+    outline:#c9c9c9 dashed 2px;
+    margin-bottom:0.3em;
+}
+
+.demo label{
+    position: absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    color:transparent;
+    margin: 0;
+    z-index: 0;
+    cursor: pointer;
+}
+
+.demo input{
+    display: block;
+    flex: 1;
+
+    box-shadow: inset 1px 1px 2px 0 #707070;
+    background-color:black;
+    color: white;
+    padding:9px 2%;
+    border: solid 2% #c9c9c9;
+    transition: border 0.3s;
+    z-index:1;
+}
+.demo input:focus{
+    border: solid 2% #969696;
+}
+.demo input:before{
+    content:' > ';
+    background-color:white;
+    color: black;
 }
 
 .question p:first-child{

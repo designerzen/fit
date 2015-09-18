@@ -26,18 +26,18 @@ window.Fit = function(){
 
 	"use strict"
 
-	var
-		MIN_SIZE = 6,
-		SCALE_FACTOR = 1,
-		MAX_TRIES = 100;
-
 	// Output
 	var
+		MAX_TRIES = 100000,
 		Fit = {},
 		convertor = document.createElement("DIV");
 
 	// internal counter
 	Fit.count = 0;
+	// Global default minimum size
+	Fit.MIN_SIZE = 6;
+	// Global default decrease increment
+	Fit.SCALE_FACTOR = 1;
 
 	/////////////////////////////////////////////////////////////////
 	// Finds the longest word and uses that to scale all of the fonts
@@ -49,14 +49,14 @@ window.Fit = function(){
 	/////////////////////////////////////////////////////////////////
 	Fit.longestWord = function( element, width, minimumSize, scaleBy )
 	{
-		minimumSize = minimumSize || MIN_SIZE;
+		minimumSize = minimumSize || Fit.MIN_SIZE;
 		// requested width, falls back to element width if not specified
 		width = width || getWidth( element );
 		// make sure we just get the number
 		width = parseFloat(width);
 
 		var
-			scaleFactor = scaleBy || SCALE_FACTOR,
+			scaleFactor = scaleBy || Fit.SCALE_FACTOR,
 			visibility = element.style.visibility,
 			// save original text
 			copy = element.innerHTML,
@@ -126,18 +126,17 @@ window.Fit = function(){
 	// are too big to fit in the specified width
 	//
 	// USE CASE: 	Shrink only Long words in thin sections
-	// ACTION:		Scales DOWN *ONLY*
-	// NB. 			Only use on VERY SHORT paragraphs
+	// ACTION:		Forces all elements to use one font size
+	// NB. 			Best supplied with multiple elements
 	/////////////////////////////////////////////////////////////////
 	Fit.allTo = function( elements, smallest )
 	{
 		// first see if elements is an array or a string...
-		if( typeof elements === 'string' ) elements = [elements];
-		if (elements.length < 1) return;
+		if( typeof elements === 'string' || elements.length < 1 ) return;
 
 		var
-			element,
 			i,
+			element,
 			quantity = elements.length,
 			toSmallest = smallest != false,
 			table = [];
@@ -176,16 +175,21 @@ window.Fit = function(){
 		return requested.fontSize + requested.fontUnits;
 	};
 
+	/////////////////////////////////////////////////////////////////
+	// Shortcut - force all text in these elements to shrink to the smallest one
+	/////////////////////////////////////////////////////////////////
 	Fit.allToSmallest = function( elements )
 	{
 		Fit.allTo( elements, true );
 	};
 
+	/////////////////////////////////////////////////////////////////
+	// Shortcut - force all text in these elements to grow to the largest one
+	/////////////////////////////////////////////////////////////////
 	Fit.allToLargest = function( elements )
 	{
 		Fit.allTo( elements, false );
 	};
-
 
 
 	/////////////////////////////////////////////////////////////////
@@ -197,7 +201,7 @@ window.Fit = function(){
 	{
 		var
 			id = uniqueID(),
-			scaleFactor = scaleBy || SCALE_FACTOR,
+			scaleFactor = scaleBy || Fit.SCALE_FACTOR,
 			style = getComputedStyle( element ),
 			height = getHeight(element),
 			heightUnits = style.height.split( height )[1];
@@ -207,7 +211,7 @@ window.Fit = function(){
 		// make sure we just get the number
 		width = parseFloat(width);
 		// set minimum fon size
-		minimumSize = minimumSize || MIN_SIZE;
+		minimumSize = minimumSize || Fit.MIN_SIZE;
 
 		var copy = element.innerHTML;
 		element.innerHTML = '<span id='+id+'>'+copy+'</span>';
@@ -225,36 +229,38 @@ window.Fit = function(){
 		// TODO : can we scale it up by a fraction to see if it fits better?
 
 		// now remove the outer span
+		element.style.whiteSpace = "nowrap";
 		element.innerHTML = copy;
 
 		// send back difference is size - useful for paddings
-		return height - parseFloat( getHeight(element) );
+		return height - parseFloat(  getHeight( element ) );
 	};
 
 
 	/////////////////////////////////////////////////////////////////
 	// Shrinks a paragraph by font-size until it's height matches
-	// the specified or under
+	// the specified (or max-height) or less than
 	/////////////////////////////////////////////////////////////////
 	Fit.inHeight = function( element, height, minimumSize, scaleBy )
 	{
 		// always have a minimum font size
-		minimumSize = minimumSize || MIN_SIZE;
+		minimumSize = minimumSize || Fit.MIN_SIZE;
 
 		// shrink font until the height fits
 		var
 			count = 0,
-			scaleFactor = scaleBy || SCALE_FACTOR,
+			scaleFactor = scaleBy || Fit.SCALE_FACTOR,
 			// and let's get the new styles now that it isn't wrapping
 			style = getComputedStyle( element ),
 			visibility = style.getPropertyValue('visibility'),
 			maxHeight = style.getPropertyValue('max-height'),
 			font = style.getPropertyValue('font-size'),
 			fontSize = parseFloat(font),
-			fontUnits = font.split( fontSize )[1],
-			scrollHeight = element.scrollHeight;
+			fontUnits = font.split( fontSize )[1];
 
-		// requested height, falls back to element nax-height if not specified
+		// scrollHeight = element.scrollHeight
+
+		// requested width, falls back to element width if not specified
 		// WARNING : maxHeight here may return weird figure || maxHeight
 		height = height || getHeight(element);
 		// make sure we just get the number
@@ -263,8 +269,14 @@ window.Fit = function(){
 		element.style.maxHeight = height + 'px';
 		element.style.visibility = 'hidden';
 
-		while ( (element.clientHeight >= height) || (element.scrollWidth > element.clientWidth) )
+		//while ( parseFloat(element.clientHeight) !== parseFloat(element.scrollHeight) || (element.clientHeight >= height) || (element.scrollWidth > element.clientWidth) )
+		while ( element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth )
 		{
+			console.log( count+". Setting fontSize "+fontSize+" element.scrollHeight "+element.scrollHeight+ " element.clientHeight "+element.clientHeight );
+			console.log( count+". Setting fontSize "+fontSize+" element.scrollWidth "+element.scrollWidth+ " element.clientWidth "+element.clientWidth );
+
+			if ( element.clientHeight === element.scrollHeight) alert("fucked "+element.clientHeight +'==='+ element.scrollHeight );
+
 			// compare against requested size
 			fontSize -= scaleFactor;
 
@@ -280,25 +292,30 @@ window.Fit = function(){
 			//console.log( scrollHeight+". Setting fontSize "+fontSize+" element.scrollHeight "+element.scrollHeight+ " element.clientHeight "+element.clientHeight );
 
 			// Make sure we don't get trapped forever
-			if (element.clientHeight == element.scrollHeight) break;
-			if (count++ >= MAX_TRIES) { console.error('noend'); break};
+			if (count++ >= MAX_TRIES) break;
 		}
 
 		element.style.maxHeight = maxHeight;
 		element.style.visibility = visibility;
 	};
+	/////////////////////////////////////////////////////////////////
+	// Shrinks a paragraph by font-size until it's height matches
+	// the specified or under
+	/////////////////////////////////////////////////////////////////
 
 	Fit.inLines = function( element, lines, minimumSize, scaleBy )
 	{
 		if (lines < 1) return 0;
-
-		minimumSize = minimumSize || MIN_SIZE;
+		// ensure we have a min size
+		minimumSize = minimumSize || Fit.MIN_SIZE;
 		// If we only want one line...
-		if (lines===1) return Fit.toSingleLine( element, undefined, minimumSize );
+		if (lines==1) return Fit.toSingleLine( element, undefined, minimumSize );
 
+		var lineHeight = computeLineHeight( element );
+		var expectedHeight = lineHeight * 2;
 		var
 			count = 0,
-			scaleFactor = scaleBy || SCALE_FACTOR,
+			scaleFactor = scaleBy || Fit.SCALE_FACTOR,
 			// and let's get the new styles now that it isn't wrapping
 			style = getComputedStyle( element ),
 			height = parseFloat( getHeight(element) ),
@@ -308,8 +325,6 @@ window.Fit = function(){
 
 		while( Fit.countLines(element, false) > lines )
 		{
-			//console.log( count+". countLines "+Fit.countLines(element, false)+" limit:"+lines );
-
 			// compare against requested size
 			fontSize -= scaleFactor;
 
@@ -322,9 +337,10 @@ window.Fit = function(){
 
 			// Try out our new size
 			element.style.fontSize = fontSize + fontUnits;
+			// console.log( count+". Setting fontSize "+fontSize+" to width "+width+ " from "+getWidth( spanElement ) );
 
 			// Make sure we don't get trapped forever
-			if (count++ >= MAX_TRIES) { console.error('noend'); break};
+			if (count++ >= MAX_TRIES) break;
 		}
 		return height - parseFloat( getHeight( element ) );
 	};
@@ -347,19 +363,23 @@ window.Fit = function(){
 		};
 
 		var styles = getComputedStyle( element ),
-			divHeight = parseFloat( styles.height || element.offsetHeight ),
+			//divHeight = parseFloat( styles.height || element.offsetHeight ),
+			divHeight = parseFloat( getHeight(element) ),
+			// parseFloat()
 			lineHeight = parseFloat( calculateLineHeight( element ) );
+			//element.style.lineHeight || styles.getPropertyValue('lineHeight') || styles['line-height'];
 
 		// Must now do some checks to ensure that lineHeight is valid
 		if (lineHeight <= 0) return 1;
-
-		var lines = Math.ceil( divHeight / lineHeight),
+		//lines = divHeight / parseInt( lineHeight );
+		var lines = Math.ceil( divHeight / lineHeight ),
 			// fetch copy
 			text = element.innerHTML,
 			// check to see if there are any line breaks and if so add them to the count...
 			numberOfLineBreaks = text && ignoreLineBreaks!==true ? (text.match(/<br/g)||[]).length : 0;
+			//console.error( lineHeight, styles.getPropertyValue('line-height'), element.style.lineHeight,  parseInt( styles['line-height']) );
 
-		//console.error( lineHeight, lines );
+		// 1 is the orignal line
 		return lines + numberOfLineBreaks;
 	};
 
@@ -372,8 +392,12 @@ window.Fit = function(){
 		element.removeAttribute('style');
 	};
 
+	var patternBr = new RegExp("<br ?/?>");
+	Fit.hasBr = function( text )
+	{
+		return patternBr.test( text );
+	};
 	// Private Methods ---------------------------------------------------------------------
-
 	/*
 	// Return a number only version of a composite string
 	function onlyNumbers(string)
@@ -381,13 +405,11 @@ window.Fit = function(){
 		return parseFloat( string.match(/[0-9]+/g, '')[0]);
 	};
 	*/
-
 	function convertToText( html )
 	{
 		convertor.innerHTML = html;
-		return convertor.textContent || convertor.innerText || html;
+		return convertor.textContent || convertor.innerText || "";
 	};
-
 	// Get the Width of an element
 	function getWidth( element, margins )
 	{
@@ -404,7 +426,6 @@ window.Fit = function(){
 	{
 		return 'FIT_' + (Fit.count++);
 	};
-
 	function computeLineHeight( element )
 	{
 		var
@@ -422,7 +443,7 @@ window.Fit = function(){
 		element.removeChild(clone);
 
 		return doubleLineHeight - singleLineHeight;
-	};
+	}
 
 	// shrinking to specified width loop with optional minimumFontSize and scaleFactor
 	function shrink( parent, child, width, minimumSize, scaleBy )
@@ -453,7 +474,7 @@ window.Fit = function(){
 			// console.log( count+". Setting fontSize "+fontSize+" to width "+width+ " from "+getWidth( spanElement ) );
 
 			// Make sure we don't get trapped forever
-			if (count++ >= MAX_TRIES) { console.error('noend'); break};
+			if (count++ >= MAX_TRIES) break;
 		}
 	};
 
