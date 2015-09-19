@@ -667,15 +667,34 @@ section{
     content:'5';
 }
 .show-count .lines-6:after{
-    background-color:teal;
+    background-color:cornflowerblue;
     color:white;
     content:'6';
+    padding: 6px 4px 0px 2px;
 }
 
 .show-count .lines-7:after{
-    background-color:teal;
+    background-color:darkblue;
     color:white;
     content:'7';
+}
+
+.show-count .lines-8:after{
+    background-color:dodgerblue;
+    color:white;
+    content:'8';
+    padding: 6px 4px 0px 2px;
+}
+
+.show-count .lines-9:after{
+    background-color:deepskyblue;
+    color:black;
+    content:'9';
+}
+.show-count .lines-10:after{
+    background-color:blueviolet;
+    color:black;
+    content:'10';
 }
 
 
@@ -778,7 +797,7 @@ section{
     right:0;
     color:transparent;
     margin: 0;
-    z-index: 0;
+    z-index: -1;
     cursor: pointer;
 }
 

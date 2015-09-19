@@ -1,9 +1,10 @@
 // Polyfills ===============================================================================
+"use strict";
 
 // Internet Explorer 8 Poly Fill
 if (!window.getComputedStyle)
 {
-	window.getComputedStyle = function(el, pseudo) {
+	window.getComputedStyle = function(el) {
 		this.el = el;
 		this.getPropertyValue = function(prop) {
 			var re = /(\-([a-z]){1})/g;
@@ -22,9 +23,7 @@ if (!window.getComputedStyle)
 // FIT : A JavaScript Text Resizing Toolset ================================================
 
 // global access : Fit.access()
-window.Fit = function(){
-
-	"use strict"
+window.Fit = (function(){
 
 	// Output
 	var
@@ -90,7 +89,7 @@ window.Fit = function(){
 		element.innerHTML = reassembled;
 
 		// Fetch expected largest
-		var longestWord = document.getElementById( wordIDs[0] );
+		longestWord = document.getElementById( wordIDs[0] );
 		longestWord.style.whiteSpace = "nowrap";
 
 		// loop through the top selections just to be sure of their sizes
@@ -138,7 +137,7 @@ window.Fit = function(){
 			i,
 			element,
 			quantity = elements.length,
-			toSmallest = smallest != false,
+			toSmallest = smallest !== false,
 			table = [];
 
 		// now loop through all elements
@@ -202,9 +201,10 @@ window.Fit = function(){
 		var
 			id = uniqueID(),
 			scaleFactor = scaleBy || Fit.SCALE_FACTOR,
-			style = getComputedStyle( element ),
-			height = getHeight(element),
-			heightUnits = style.height.split( height )[1];
+			//style = getComputedStyle( element ),
+			height = getHeight(element);
+
+		// heightUnits = style.height.split( height )[1];
 
 		// requested width, falls back to element width if not specified
 		width = width || getWidth(element);
@@ -272,8 +272,8 @@ window.Fit = function(){
 		//while ( parseFloat(element.clientHeight) !== parseFloat(element.scrollHeight) || (element.clientHeight >= height) || (element.scrollWidth > element.clientWidth) )
 		while ( element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth )
 		{
-			console.log( count+". Setting fontSize "+fontSize+" element.scrollHeight "+element.scrollHeight+ " element.clientHeight "+element.clientHeight );
-			console.log( count+". Setting fontSize "+fontSize+" element.scrollWidth "+element.scrollWidth+ " element.clientWidth "+element.clientWidth );
+			//console.log( count+". Setting fontSize "+fontSize+" element.scrollHeight "+element.scrollHeight+ " element.clientHeight "+element.clientHeight );
+			//console.log( count+". Setting fontSize "+fontSize+" element.scrollWidth "+element.scrollWidth+ " element.clientWidth "+element.clientWidth );
 
 			if ( element.clientHeight === element.scrollHeight) alert("fucked "+element.clientHeight +'==='+ element.scrollHeight );
 
@@ -311,10 +311,10 @@ window.Fit = function(){
 		// If we only want one line...
 		if (lines==1) return Fit.toSingleLine( element, undefined, minimumSize );
 
-		var lineHeight = computeLineHeight( element );
-		var expectedHeight = lineHeight * 2;
 		var
 			count = 0,
+			// fetch expected line height
+			//lineHeight = computeLineHeight( element ),
 			scaleFactor = scaleBy || Fit.SCALE_FACTOR,
 			// and let's get the new styles now that it isn't wrapping
 			style = getComputedStyle( element ),
@@ -362,7 +362,7 @@ window.Fit = function(){
 			return computedLineHeight;
 		};
 
-		var styles = getComputedStyle( element ),
+		var
 			//divHeight = parseFloat( styles.height || element.offsetHeight ),
 			divHeight = parseFloat( getHeight(element) ),
 			// parseFloat()
@@ -409,23 +409,24 @@ window.Fit = function(){
 	{
 		convertor.innerHTML = html;
 		return convertor.textContent || convertor.innerText || "";
-	};
+	}
 	// Get the Width of an element
-	function getWidth( element, margins )
+	function getWidth( element )
 	{
 		return element.clientWidth || element.offsetWidth || element.getBoundingClientRect().width;
-	};
+	}
 
 	// Get the Height of an element
 	function getHeight( element )
 	{
 		return element.clientHeight || element.offsetHeight || element.getBoundingClientRect().height;
-	};
+	}
 
 	function uniqueID()
 	{
 		return 'FIT_' + (Fit.count++);
-	};
+	}
+
 	function computeLineHeight( element )
 	{
 		var
@@ -476,9 +477,9 @@ window.Fit = function(){
 			// Make sure we don't get trapped forever
 			if (count++ >= MAX_TRIES) break;
 		}
-	};
+	}
 
 	// Reference to Class
 	return Fit;
 
-}( window );
+}( window ));
