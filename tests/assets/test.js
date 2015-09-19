@@ -181,26 +181,145 @@ var demos = getById('demos');
 var examples = getById('examples');
 
 var buttonShowBorders = getById('show-borders');
-buttonShowBorders.addEventListener('mousedown', function(event){
-    toggleClass( demos, 'show-borders' );
-    toggleClass( examples, 'show-borders' );
-    event.preventDefault();
-    return false;
-});
+if (buttonShowBorders)
+{
+    buttonShowBorders.addEventListener('mousedown', function(event){
+        if (demos) toggleClass( demos, 'show-borders' );
+        if (examples) toggleClass( examples, 'show-borders' );
+        event.preventDefault();
+        return false;
+    });
+}
 
 var buttonReset = getById('reset-type');
-buttonReset.addEventListener('mousedown', function(event){
-    resetAll();
-    event.preventDefault();
-    return false;
-});
+if (buttonReset)
+{
+    buttonReset.addEventListener('mousedown', function(event){
+        resetAll();
+        event.preventDefault();
+        return false;
+    });
+}
+
 
 var buttonSet = getById('set-type');
-buttonSet.addEventListener('mousedown', function(event){
-    fitTypography();
-    event.preventDefault();
-});
+if (buttonSet)
+{
+    buttonSet.addEventListener('mousedown', function(event){
+        fitTypography();
+        event.preventDefault();
+    });
+}
 
+var buttonCount = getById('set-count');
+if (buttonCount)
+{
+    buttonCount.addEventListener('mousedown', function(event){
+        if (demos) toggleClass( demos, 'show-count' );
+        if (examples) toggleClass( examples, 'show-count' );
+        event.preventDefault();
+    });
+}
+
+
+var demoCache = {};
+function onTextChanged( inputElement, outputElement, methodToCall, useInnerHTTML )
+{
+    // fetch value
+    var
+        originalValue = demoCache[inputElement],
+        newValue = useInnerHTTML === true ? inputElement.innerHTML : inputElement.value;
+
+    if ( originalValue != newValue )
+    {
+        // change has occurred!
+        if ( useInnerHTTML === true )
+        {
+            outputElement.value = newValue;
+            if (inputElement.setSelectionRange) inputElement.setSelectionRange( newValue.length-1 );
+        }else{
+            outputElement.innerHTML = newValue;
+
+        }
+
+        demoCache[ inputElement ] = newValue;
+        // console.log('Text > '+newValue, methodToCall );
+        methodToCall( useInnerHTTML === true ? inputElement : outputElement );
+    }
+
+}
+
+function registerDemo( inputElement, outputElement, methodToCall )
+{
+    if ( inputElement && outputElement )
+    {
+        inputElement.addEventListener('change', function(event){ onTextChanged( inputElement, outputElement, methodToCall ); } );
+        inputElement.addEventListener('keyup', function(event){ onTextChanged( inputElement, outputElement, methodToCall ); } );
+        inputElement.addEventListener('paste', function(event){ onTextChanged( inputElement, outputElement, methodToCall ); } );
+        //inputElement.addEventListener('click', function(event){ onTextChanged( inputElement, outputElement, methodToCall ); } );
+    }
+}
+function registerDemoEditting( inputElement, outputElement, methodToCall )
+{
+    if ( inputElement )
+    {
+        inputElement.addEventListener('blur', function(event){ onTextChanged( inputElement, outputElement, methodToCall, true ); } );
+        inputElement.addEventListener('keyup', function(event){ onTextChanged( inputElement, outputElement, methodToCall, true ); } );
+        inputElement.addEventListener('paste', function(event){ onTextChanged( inputElement, outputElement, methodToCall, true ); } );
+        inputElement.addEventListener('input', function(event){ onTextChanged( inputElement, outputElement, methodToCall, true ); } );
+        //inputElement.addEventListener('click', function(event){ onTextChanged( inputElement, outputElement, methodToCall, true ); } );
+    }
+}
+
+// Now create our input field demos
+var
+    demoSingleLineInput = getById('input-single-line'),
+    demoSingleLineOutput = getById('demo-single-line');
+
+registerDemo( demoSingleLineInput, demoSingleLineOutput, Fit.toSingleLine );
+registerDemoEditting( demoSingleLineOutput, demoSingleLineInput, Fit.toSingleLine );
+
+
+var
+    demoLongestWordInput = getById('input-longest-word'),
+    demoLongestWordOutput = getById('demo-longest-word');
+
+registerDemo( demoLongestWordInput, demoLongestWordOutput, Fit.longestWord );
+registerDemoEditting( demoLongestWordOutput, demoLongestWordInput, Fit.toSingleLine );
+
+var
+    demoInHeightInput = getById('input-in-height'),
+    demoInHeightOutput = getById('demo-in-height');
+
+registerDemo( demoInHeightInput, demoInHeightOutput, Fit.inHeight );
+registerDemoEditting( demoInHeightOutput, demoInHeightInput,Fit.toSingleLine );
+
+var
+    demoCountLinesInput = getById('input-count-lines'),
+    demoCountLinesOutput = getById('demo-count-lines');
+
+registerDemo( demoCountLinesInput, demoCountLinesOutput, setLinesClass );
+registerDemoEditting( demoCountLinesOutput, demoCountLinesInput, Fit.toSingleLine );
+
+function setLinesClass( element )
+{
+    var lines = Fit.countLines( element );
+    element.className = 'lines-'+lines;
+}
+
+var
+    demoMatchSizes = getByClass('demo-match-sizes'),
+    demoMatchSizesInput = getById('input-match-size'),
+    demoMatchSizesOutput = getById('demo-match-size');
+
+registerDemo( demoMatchSizesInput, demoMatchSizesOutput, matchSizes );
+registerDemoEditting( demoMatchSizesOutput, demoMatchSizesInput, Fit.toSingleLine );
+
+function matchSizes( element )
+{
+    Fit.toSingleLine( element );
+    Fit.allToSmallest( demoMatchSizes );
+}
 
 function toggleClass( el, className )
 {
