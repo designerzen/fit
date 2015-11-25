@@ -222,35 +222,158 @@ if (buttonCount)
 }
 
 
-var demoCache = {};
+
+
+var
+    demoCache = {},
+    preventTrigger = false;
+
 function onTextChanged( inputElement, outputElement, methodToCall, useInnerHTTML )
 {
+    /*
+    // so the text field triggered this but we don't want events to replicate
+    if (preventTrigger === true )
+    {
+        preventTrigger = false;
+        console.log('replica');
+        return;
+    }
+*/
     // fetch value
     var
+        range,
         originalValue = demoCache[inputElement],
-        newValue = useInnerHTTML === true ? inputElement.innerHTML : inputElement.value;
+        newValue = useInnerHTTML === true ? inputElement.innerHTML : inputElement.value,
+        cursorPosition = getCursorPosition( inputElement );
 
     if ( originalValue != newValue )
     {
         // change has occurred!
         if ( useInnerHTTML === true )
         {
-            outputElement.value = newValue;
-            if (inputElement.setSelectionRange) inputElement.setSelectionRange( newValue.length-1 );
-        }else{
-            outputElement.innerHTML = newValue;
+            inputElement.focus();
+            range = saveSelection();
 
+            //preventTrigger = true;
+            outputElement.value = newValue;
+            //setCursorPosition( inputElement, 5 ); // cursorPosition
+            //if (inputElement.setSelectionRange) inputElement.setSelectionRange( newValue.length-1 );
+        }else{
+
+            // text field
+            outputElement.innerHTML = newValue;
+            //setCursorPosition( outputElement, 5 ); // cursorPosition
         }
 
         demoCache[ inputElement ] = newValue;
         // console.log('Text > '+newValue, methodToCall );
-        methodToCall( useInnerHTTML === true ? inputElement : outputElement );
+        //methodToCall( useInnerHTTML === true ? inputElement : outputElement );
+
+        if ( useInnerHTTML === true )
+        {
+            console.error('setting range : ', range );
+            restoreSelection( inputElement, range );
+        }
     }
 
 }
+function saveSelection()
+{
+    if(window.getSelection)//non IE Browsers
+    {
+        return window.getSelection().getRangeAt(0);
+    }
+    else if(document.selection)//IE
+    {
+        return document.selection.createRange();
+    }
+}
+
+function restoreSelection( el, savedRange )
+{
+    //isInFocus = true;
+    el.focus();
+    if (savedRange != null) {
+        if (window.getSelection)//non IE and there is already a selection
+        {
+            var s = window.getSelection();
+            if (s.rangeCount > 0) s.removeAllRanges();
+            s.addRange(savedRange);
+        }
+        else if (document.createRange)//non IE and no selection
+        {
+            window.getSelection().addRange(savedRange);
+        }
+        else if (document.selection)//IE
+        {
+            savedRange.select();
+        }
+    }
+}
+function getCursorPosition( el )
+{
+
+    if ("selection" in document) {
+
+        console.log('Carat selection > ', el );
+
+        var range = el.createTextRange();
+        try {
+            range.setEndPoint("EndToStart", document.selection.createRange());
+        } catch (e) {
+            // Catch IE failure here, return 0 like
+            // other browsers
+            return 0;
+        }
+        return range.text.length;
+
+    } else if (el.selectionStart != null) {
+
+        console.log('Carat selectionStart > ', el );
+
+        return el.selectionStart;
+    }else{
+        //console.log('Carat unknown > ', el );
+    }
+}
+function setCursorPosition( el, pos)
+{
+    /*
+    if (el.createTextRange) {
+        var range = el.createTextRange();
+        range.move("character", index);
+        range.select();
+    } else if (el.selectionStart != null) {
+        el.focus();
+        el.setSelectionRange(index, index);
+    }*/
+    var sel; // character at which to place caret
+    el.focus();
+    if (document.selection)
+    {
+        // IE
+        sel = document.selection.createRange();
+        sel.moveStart('character', pos);
+        sel.select();
+        console.log('Carat document sel '+pos+' > ', sel );
+    }
+    else if (window.getSelection) {
+
+        //non IE and there is already a selection
+        sel = window.getSelection();
+        sel.collapse(el.firstChild, pos);
+        console.log('Carat window sel '+pos+' > ', sel );
+
+    }else if (document.createRange)//non IE and no selection
+    {
+        window.getSelection().addRange(savedRange);
+    }
+}
+
 
 function registerDemo( inputElement, outputElement, methodToCall )
 {
+    return;
     if ( inputElement && outputElement )
     {
         inputElement.addEventListener('change', function(event){ onTextChanged( inputElement, outputElement, methodToCall ); } );

@@ -9,7 +9,7 @@
 
         <link href='https://fonts.googleapis.com/css?family=Roboto:400,500' rel='stylesheet' type='text/css'>
         <link href='https://fonts.googleapis.com/css?family=Playfair+Display:400italic,700italic' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="assets/style.css">
+        <link rel="stylesheet" href="style.css">
 
         <!--[if lt IE 9]>
             <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -20,16 +20,11 @@
 
 
 
-            <header id='main-header'>
+            <header>
                 <h1 class='fit--single-line' id='main-heading'><strong>FIT.</strong><sub>js</sub> - Your Typography</h1>
                 <h2 class='fit--single-line' id='main-subheading'>A <strong>JavaScript</strong> Toolkit for typography resizing</h2>
                 <nav>
                     <ul id='menu'>
-
-
-                    </ul>
-
-                    <ul id='submenu'>
 
                         <li class='menu-item'>
                             <a id='show-borders' href='#'>Show Borders</a>
@@ -43,13 +38,7 @@
                             <a id='set-type' href='#'>Set Type</a>
                         </li>
 
-                        <li class='menu-item'>
-                            <a id='set-count' href='#'>Set Count</a>
-                        </li>
-
                     </ul>
-
-
                 </nav>
             </header>
 
@@ -58,7 +47,7 @@
             <article>
                 <header>
                     <h2 class='fit--single-line'><strong>FIT</strong> - Test Suite</h2>
-                    <h3 class='fit--single-line'>Methods &amp; Options</h3>
+                    <h3 class=''>Resize this window to see how the methods work</h3>
                 </header>
 
                 <section>
@@ -81,34 +70,20 @@
                     <p class=''>This will attempt to work out how many rows this text vertically spans.</p>
                 </section>
 
-                <h3 class='fit--longest-word'>Instructions</h3>
-                <p class='fit--single-line'>First embed JS path code in html
-
-                    <code>
-
-                    </code>
-                </p>
+                <h3 class='fit--single-line'>Instructions</h3>
+                <p class='fit--longest-word'>First embed JS path code in html</p>
 
 
                 <p class='fit--single-line'>Then using a HTMLElement, call on of the above methods</p>
 
-                <p class='fit--single-line explanation'>// Fetch an element from the DOM</p>
-                <code class='fit--single-line'>
-                    var element = document.getElementById('headline');
-                </code>
-
-                <p class='fit--single-line explanation'>// Fit the text in an element to fit on one line</p>
-                <code class='fit--single-line'>
-                    Fit.toSingleLine(element);
-                </code>
-
-                <p class='fit--single-line explanation'>// Max Width is 400px</p>
-                <code class='fit--single-line'>
-                    Fit.toSingleLine(element,400);
-                </code>
-
-                <p class='fit--single-line explanation'>// Max Width is 400px, minimum font size is 12px</p>
                 <code class='fit--longest-word'>
+                    // Fetch an element from the DOM<br />
+                    var element = document.getElementById('headline');<br /><br />
+                    // Fit the text in an element to fit on one line<br />
+                    Fit.toSingleLine(element);<br /><br />
+                    // Max Width is 400px<br />
+                    Fit.toSingleLine(element,400);<br /><br />
+                    // Max Width is 400px, minimum font size is 12px<br />
                     Fit.toSingleLine(element,400,12);
                 </code>
             </article>
@@ -178,9 +153,9 @@
                         <h3 class='fit--single-line'><strong>FIT</strong> - Line Count</h3>
                         <h4 class=''>To determine how many rows</h4>
                     </header>
-                    <h3 class='fit--longest-word show-count'>Wohin Sie auch reisen,Machen Sie eine unvergessliche Reise</h3>
-                    <p class='fit--longest-word show-count'>Long Sentence, Autovuokraushinnoista, Mietwagen-Angebote, Disenfrantchise</p>
-                    <p class='fit--longest-word show-count'>Short Sentence</p>
+                    <h3 class='fit--longest-word'>Wohin Sie auch reisen,Machen Sie eine unvergessliche Reise</h3>
+                    <p class='fit--longest-word'>Long Sentence, Autovuokraushinnoista, Mietwagen-Angebote, Disenfrantchise</p>
+                    <p class='fit--longest-word'>Short Sentence</p>
                 </section>
 
             </article>
@@ -257,8 +232,8 @@
             </article>
 
         </main>
-        <script src="assets/fontfaceobserver.js"></script>
+        <script src="fontfaceobserver.js"></script>
         <script src="../src/fit.js"></script>
-        <script src="assets/test.js"></script>
+        <script src="test.js"></script>
     </body>
 </html>
